@@ -23,6 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 #include <iostream>
 #include <vector>
 #include <string.h>
@@ -43,6 +44,7 @@ public:
     bool destroy();
 
     bool add(const char* buf, size_t length);
+    char* get_add();
     bool del();
     bool empty();
     size_t size();
@@ -118,6 +120,34 @@ size_t ring_buffer::size()
 {
     return (head_index >= tail_index)?(head_index - tail_index):(RB_SIZE - tail_index + head_index);
 }
+char* ring_buffer::get_add()
+{
+    long tmp_index = tail_index;
+    if (!tail_index)
+    {
+        if(head_index == (RB_SIZE - 1))
+        {
+            std::cout << "ring buffer is full"<<std::endl;
+            // full actually one place left
+            return NULL;
+        }
+        tail_index = (RB_SIZE - 1);
+    }
+    else
+    {
+        --tail_index;
+        if (tail_index == head_index)
+        {
+            std::cout << "ring buffer is full"<<std::endl;
+            ++tail_index;
+            //full
+            return NULL;
+        }
+    }
+
+    return _ring_buffer[tmp_index];
+}
+
 bool ring_buffer::add(const char* buf, size_t length)
 {
     if (length >RB_ELEMENT_SIZE)
