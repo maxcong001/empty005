@@ -213,16 +213,21 @@ bool ring_buffer::empty()
 bool ring_buffer::init()
 {
     _ring_buffer.reserve(RB_SIZE);
+    // to do: alloc page allagent
+    char* tmp_ele_buffer = calloc(RB_SIZE, RB_ELEMENT_SIZE);
+    if (!tmp_ele_buffer)
+    {
+        return false;
+    }
     for (int i = 0; i < RB_SIZE; i++ )
     {
-        char* tmp_ele_buffer = new char[RB_ELEMENT_SIZE];
-        memset(tmp_ele_buffer, 0, RB_ELEMENT_SIZE);
         if(tmp_ele_buffer)
         {
-            _ring_buffer[i] = tmp_ele_buffer;
+            _ring_buffer[i] = tmp_ele_buffer + RB_SIZE * i;
         }
         else
         {
+            // actually will not run here
             // log here
         }
     }
