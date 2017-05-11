@@ -68,6 +68,7 @@ public:
     // humm this is the next tail index
     std::atomic<long> tail_index;
 
+    char* tmp_ele_buffer;
 
 };
 char* ring_buffer::peek_tail_element()
@@ -214,7 +215,7 @@ bool ring_buffer::init()
 {
     _ring_buffer.reserve(RB_SIZE);
     // to do: alloc page allagent
-    char* tmp_ele_buffer = calloc(RB_SIZE, RB_ELEMENT_SIZE);
+    tmp_ele_buffer = calloc(RB_SIZE, RB_ELEMENT_SIZE);
     if (!tmp_ele_buffer)
     {
         return false;
@@ -236,11 +237,7 @@ bool ring_buffer::init()
 
 bool ring_buffer::destroy()
 {
-    for (int i = 0; i < RB_SIZE; i++ )
-    {
-        char* tmp_ele_buffer = _ring_buffer[i];
-        delete [] tmp_ele_buffer;
-    }
+    free(tmp_ele_buffer);
     return true; 
 }
 
